@@ -45,8 +45,21 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
     copy[old].position = new_;
     copy.sort((taskA: Task, taskB: Task) => taskA.position - taskB.position);
     setTasks(copy);
-    const taskOrigin = copy[old];
-    localStorage.setItem("tasks", JSON.stringify(copy));
+    const taksOrigin: Task[] = JSON.parse(
+      localStorage.getItem("tasks") || "[]"
+    );
+
+    for (let i = 0; i < taksOrigin.length; i++) {
+      for (let j = 0; j < copy.length; j++) {
+        if (taksOrigin[i].id === copy[j].id) {
+          taksOrigin[i].position = copy[j].position;
+        }
+      }
+    }
+    taksOrigin.sort(
+      (taskA: Task, taskB: Task) => taskA.position - taskB.position
+    );
+    localStorage.setItem("tasks", JSON.stringify(taksOrigin));
   }
 
   function completeHandler(id: string) {
